@@ -1,0 +1,89 @@
+#создание базы данных
+create database exercise1;
+
+#cоздание таблицы fin_instr для загрузки данных из файла Orderlog
+use exercise1;
+CREATE TABLE `fin_instr` (
+`NO` bigint(20) unsigned,
+`SECCODE` varchar(255)  ,
+`BUYSELL` char(1),
+`TIME` varchar(30) ,
+`ORDERNO` bigint(20) unsigned,
+`ACTION` bigint(20) unsigned,
+`PRICE` float,
+`VOLUME` bigint(20) unsigned,
+`TRADENO` bigint(20) unsigned,
+`TRADEPRICE` float unsigned,
+PRIMARY KEY (`NO`));
+LOAD DATA Infile 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/Orderlog.csv'
+INTO TABLE `fin_instr`
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES
+(NO,SECCODE,BUYSELL,TIME,ORDERNO,ACTION,PRICE,VOLUME,TRADENO,TRADEPRICE);
+
+#создание таблицы для загрузки классификатора
+use exercise1;
+Create Table classifier(
+Instrument_id bigint, 
+Instrument_type varchar(100),
+TRADE_CODE varchar(30), 
+PRIMARY KEY(TRADE_CODE));
+LOAD DATA Infile 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/list.csv'
+INTO TABLE classifier
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES;
+
+#запрос, который позволяет выгрузить из Orderlog данные по привилегированным акциям 
+SELECT SECCODE,BUYSELL,TIME,ORDERNO,ACTION,PRICE,VOLUME,TRADENO,TRADEPRICE
+FROM Orderlog JOIN classifier1
+ON SECCODE=TRADE_CODE
+AND INSTRUMENT_TYPE='Акция привилегированная'
+
+#запрос, который позволяет выгрузить из Orderlog данные по обыкновенным акциям 
+SELECT SECCODE,BUYSELL,TIME,ORDERNO,ACTION,PRICE,VOLUME,TRADENO,TRADEPRICE
+FROM Orderlog JOIN classifier1
+ON SECCODE=TRADE_CODE
+AND INSTRUMENT_TYPE='Акция обыкновенная'
+
+#запрос, который позволяет выгрузить из Orderlog данные по облигациям
+SELECT SECCODE,BUYSELL,TIME,ORDERNO,ACTION,PRICE,VOLUME,TRADENO,TRADEPRICE
+FROM Orderlog JOIN classifier1
+ON SECCODE=TRADE_CODE
+AND INSTRUMENT_TYPE='Облигация биржевая' or 'Облигация федеральная' or 'Облигация муниципальная' or 'Еврооблигации'  
+or 'Облигация инностранного эмитента' or 'Облигация Банка России' or 'Облигация федерального займа' or 
+'Облигация корпоративная'
+
+#Проверка на наличие отрицательных значений
+use exercise1;
+SELECT *,
+CASE WHEN NO < 0 or SECCODE < 0 or BUYSELL <0 or TIME < 0 or ORDERNO < 0 or ACTION < 0 or PRICE < 0 or VOLUME < 0
+THEN 'NEGATIVE VALUES'
+else 'NO NEGATIVE VALUES'
+END AS `NEGATIVE NUMBERS CHECK` 
+from Orderlog;
+
+#Проверка на наличие нулевого объема
+use exercise1;
+select *
+from Orderlog
+where VOLUME IS NULL;
+
+#Проверка на нули и пропущенные занчения
+SELECT *,
+CASE WHEN NO or SECCODE or BUYSELL or TIME or ORDERNO or ACTION or PRICE or VOLUME  or TRADENO or TRADEPRICE is NULL or
+NO or SECCODE or BUYSELL or TIME or ORDERNO or ACTION or PRICE or VOLUME or TRADENO or TRADEPRICE =''
+THEN 'Zero or empty values'
+else 'NO zero or empty values'
+END AS `ZERO AND EMPTY VALUES CHECK` 
+from Orderlog;
+
+
+
+
+
+
+
+
+
