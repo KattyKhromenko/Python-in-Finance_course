@@ -22,6 +22,8 @@ LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (NO,SECCODE,BUYSELL,TIME,ORDERNO,ACTION,PRICE,VOLUME,TRADENO,TRADEPRICE);
 
+При запуске скрипта для загрузки данных из классификатора, выдается ошибка 1265. Проверяла столбец на наличие нечисловых значений,слишком больших числовых значений, 
+из-за которых возможен выход за диапазон значений для колонки Instrument_id,в колонке все нормально. Поэтому воспользовалась Table Data Import Wizard в Workbench. 
 #создание таблицы для загрузки классификатора
 use exercise1;
 Create Table classifier(
