@@ -17,8 +17,9 @@ print('enter timestamp:')
 timestamp =input()
 print('timestamp:', timestamp)
 
-sql_query = f'select * from Orderlog where SEC_CODE="{SEC_CODE}" order by (time - {timestamp}) limit 1'
+sql_query = f'select * from Orderlog where SECCODE="{SEC_CODE}" order by ABS(time - {timestamp}) limit 1'
 cursor.execute(sql_query)
 list =cursor.fetchmany(1000)
 print(list)
+
 
