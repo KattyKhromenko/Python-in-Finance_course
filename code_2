@@ -1,0 +1,23 @@
+import pyodbc
+db_path = 'exercise1'
+con_str = f"DRIVER={{MySQL ODBC 8.0 ANSI Driver}};SERVER=localhost; USER=root; Password=ketty7; DATABASE={db_path};Trusted_connection=yes"
+conn = pyodbc.connect(con_str)
+cursor = conn.cursor()
+
+sql_query= "select * from list"
+cursor.execute(sql_query)
+result = cursor.fetchmany(1000)
+print(result)
+
+print('enter SEC_CODE:')
+SEC_CODE = input()
+print('SEC_CODE:', )
+
+print('enter timestamp:')
+timestamp =input()
+print('timestamp:', timestamp)
+
+sql_query = f'select * from Orderlog where SECCODE="{SEC_CODE}" order by ABS(time - {timestamp}) limit 1'
+cursor.execute(sql_query)
+result = cursor.fetchmany(1000)
+print(result)
