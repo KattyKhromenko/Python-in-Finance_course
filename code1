@@ -1,26 +1,36 @@
 #создание базы данных
 create database exercise1;
 
-#cоздание таблицы fin_instr для загрузки данных из файла Orderlog
+#cоздание таблицы Orderlog для загрузки данных из файла Orderlog20151222
 use exercise1;
-CREATE TABLE `fin_instr` (
-`NO` bigint(20) unsigned,
-`SECCODE` varchar(255)  ,
-`BUYSELL` char(1),
-`TIME` varchar(30) ,
-`ORDERNO` bigint(20) unsigned,
-`ACTION` bigint(20) unsigned,
-`PRICE` float,
-`VOLUME` bigint(20) unsigned,
-`TRADENO` bigint(20) unsigned,
-`TRADEPRICE` float unsigned,
-PRIMARY KEY (`NO`));
-LOAD DATA Infile 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/Orderlog.csv'
-INTO TABLE `fin_instr`
+create table Orderlog(
+NO BIGINT PRIMARY KEY not null, 
+SECCODE text, 
+BUYSELL CHAR(1), 
+TIME INT, 
+ORDERNO BIGINT unsigned,
+ACTION BIGINT unsigned,
+PRICE FLOAT,
+VOLUME BIGINT unsigned,
+TRADENO TEXT,
+TRADEPRICE TEXT);
+
+SET autocommit =0;
+SET unique_checks = 0;
+SET foreign_key_checks = 0;
+
+LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/OrderLog20151222.csv' 
+INTO TABLE Orderlog
 FIELDS TERMINATED BY ','
-LINES TERMINATED BY '\n'
+ENCLOSED BY '"' 
+LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES
 (NO,SECCODE,BUYSELL,TIME,ORDERNO,ACTION,PRICE,VOLUME,TRADENO,TRADEPRICE);
+
+COMMIT;
+
+SET unique_checks = 1;
+SET foreign_key_checks = 1;
 
 При запуске скрипта для загрузки данных из классификатора, выдается ошибка 1265. Проверяла столбец на наличие нечисловых значений,слишком больших числовых значений, 
 из-за которых возможен выход за диапазон значений для колонки Instrument_id,в колонке все нормально. Поэтому воспользовалась Table Data Import Wizard в Workbench. 
@@ -30,30 +40,30 @@ Create Table classifier(
 Instrument_id bigint, 
 Instrument_type varchar(100),
 TRADE_CODE varchar(30), 
-PRIMARY KEY(TRADE_CODE));
-LOAD DATA Infile 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/list.csv'
+ PRIMARY KEY(TRADE_CODE));
+LOAD DATA Infile 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/ListingSecurityList.csv'
 INTO TABLE classifier
 FIELDS TERMINATED BY ','
-LINES TERMINATED BY '\n'
+LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES;
 
 #запрос, который позволяет выгрузить из Orderlog данные по привилегированным акциям 
-SELECT SECCODE,BUYSELL,TIME,ORDERNO,ACTION,PRICE,VOLUME,TRADENO,TRADEPRICE
-FROM Orderlog JOIN classifier1
+SELECT NO,SECCODE,BUYSELL,TIME,ORDERNO,ACTION,PRICE,VOLUME,TRADENO,TRADEPRICE
+FROM Orderlog JOIN сlassifier
 ON SECCODE=TRADE_CODE
-AND INSTRUMENT_TYPE='Акция привилегированная'
+WHERE INSTRUMENT_TYPE='Акция привилегированная'
 
 #запрос, который позволяет выгрузить из Orderlog данные по обыкновенным акциям 
 SELECT SECCODE,BUYSELL,TIME,ORDERNO,ACTION,PRICE,VOLUME,TRADENO,TRADEPRICE
-FROM Orderlog JOIN classifier1
+FROM Orderlog JOIN list
 ON SECCODE=TRADE_CODE
-AND INSTRUMENT_TYPE='Акция обыкновенная'
+WHERE INSTRUMENT_TYPE='Акция обыкновенная'
 
 #запрос, который позволяет выгрузить из Orderlog данные по облигациям
 SELECT SECCODE,BUYSELL,TIME,ORDERNO,ACTION,PRICE,VOLUME,TRADENO,TRADEPRICE
-FROM Orderlog JOIN classifier1
+FROM Orderlog JOIN classifier
 ON SECCODE=TRADE_CODE
-AND INSTRUMENT_TYPE='Облигация биржевая' or 'Облигация федеральная' or 'Облигация муниципальная' or 'Еврооблигации'  
+WHERE INSTRUMENT_TYPE='Облигация биржевая' or 'Облигация федеральная' or 'Облигация муниципальная' or 'Еврооблигации'  
 or 'Облигация инностранного эмитента' or 'Облигация Банка России' or 'Облигация федерального займа' or 
 'Облигация корпоративная'
 
