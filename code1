@@ -32,8 +32,8 @@ COMMIT;
 SET unique_checks = 1;
 SET foreign_key_checks = 1;
 
-При запуске скрипта для загрузки данных из классификатора, выдается ошибка 1265. Проверяла столбец на наличие нечисловых значений,слишком больших числовых значений, 
-из-за которых возможен выход за диапазон значений для колонки Instrument_id,в колонке все нормально. Поэтому воспользовалась Table Data Import Wizard в Workbench. 
+При запуске скрипта для загрузки данных из классификатора, выдается ошибка 1265: Data truncated for column 'Instrument_id' at row 1. Проверяла столбец на наличие нечисловых значений,слишком больших числовых значений, 
+из-за которых возможен выход за диапазон значений,в столбце все нормально. Поэтому воспользовалась Table Data Import Wizard в Workbench. 
 #создание таблицы для загрузки классификатора
 use exercise1;
 Create Table classifier(
@@ -63,7 +63,7 @@ WHERE INSTRUMENT_TYPE='Акция обыкновенная'
 SELECT SECCODE,BUYSELL,TIME,ORDERNO,ACTION,PRICE,VOLUME,TRADENO,TRADEPRICE
 FROM Orderlog JOIN classifier
 ON SECCODE=TRADE_CODE
-WHERE INSTRUMENT_TYPE='Облигация биржевая' or 'Облигация федеральная' or 'Облигация муниципальная' or 'Еврооблигации'  
+WHERE INSTRUMENT_TYPE='Облигация биржевая' or 'Облигация федеральная' or 'Облигация муниципальная' or 'Еврооблигация'  
 or 'Облигация инностранного эмитента' or 'Облигация Банка России' or 'Облигация федерального займа' or 
 'Облигация корпоративная'
 
@@ -82,7 +82,7 @@ select *
 from Orderlog
 where VOLUME IS NULL;
 
-#Проверка на нули и пропущенные занчения
+#Проверка на нули и пропущенные значения
 SELECT *,
 CASE WHEN NO or SECCODE or BUYSELL or TIME or ORDERNO or ACTION or PRICE or VOLUME  or TRADENO or TRADEPRICE is NULL or
 NO or SECCODE or BUYSELL or TIME or ORDERNO or ACTION or PRICE or VOLUME or TRADENO or TRADEPRICE =''
@@ -91,7 +91,7 @@ else 'NO zero or empty values'
 END AS `ZERO AND EMPTY VALUES CHECK` 
 from Orderlog;
 
-#поиск тикера, по которому было совершено наибольшее количество сделок
+#поиск тикера, по которому было совершено наибольшее количество рыночных сделок
 SELECT SECCODE,
 count(SECCODE) from Orderlog JOIN classifier1
 ON SECCODE=TRADE_CODE
