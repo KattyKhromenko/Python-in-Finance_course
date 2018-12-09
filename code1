@@ -82,6 +82,12 @@ select *
 from Orderlog
 where VOLUME IS NULL;
 
+#Проверка на наличие нулевой цены 
+use exercise1;
+select *
+from Orderlog
+where PRICE IS NULL;
+
 #Проверка на нули и пропущенные значения
 SELECT *,
 CASE WHEN NO or SECCODE or BUYSELL or TIME or ORDERNO or ACTION or PRICE or VOLUME  or TRADENO or TRADEPRICE is NULL or
