@@ -36,20 +36,20 @@ SET foreign_key_checks = 1;
 из-за которых возможен выход за диапазон значений,в столбце все нормально. Поэтому воспользовалась Table Data Import Wizard в Workbench. 
 #создание таблицы для загрузки классификатора
 use exercise1;
-Create Table classifier(
+Create Table list(
 Instrument_id bigint, 
 Instrument_type varchar(100),
 TRADE_CODE varchar(30), 
- PRIMARY KEY(TRADE_CODE));
+PRIMARY KEY(TRADE_CODE));
 LOAD DATA Infile 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/ListingSecurityList.csv'
-INTO TABLE classifier
+INTO TABLE list
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES;
 
 #запрос, который позволяет выгрузить из Orderlog данные по привилегированным акциям 
 SELECT NO,SECCODE,BUYSELL,TIME,ORDERNO,ACTION,PRICE,VOLUME,TRADENO,TRADEPRICE
-FROM Orderlog JOIN сlassifier
+FROM Orderlog JOIN list
 ON SECCODE=TRADE_CODE
 WHERE INSTRUMENT_TYPE='Акция привилегированная'
 
@@ -61,7 +61,7 @@ WHERE INSTRUMENT_TYPE='Акция обыкновенная'
 
 #запрос, который позволяет выгрузить из Orderlog данные по облигациям
 SELECT SECCODE,BUYSELL,TIME,ORDERNO,ACTION,PRICE,VOLUME,TRADENO,TRADEPRICE
-FROM Orderlog JOIN classifier
+FROM Orderlog JOIN list
 ON SECCODE=TRADE_CODE
 WHERE INSTRUMENT_TYPE='Облигация биржевая' or 'Облигация федеральная' or 'Облигация муниципальная' or 'Еврооблигация'  
 or 'Облигация инностранного эмитента' or 'Облигация Банка России' or 'Облигация федерального займа' or 
