@@ -101,7 +101,7 @@ from Orderlog;
 SELECT SECCODE,
 count(SECCODE) from Orderlog JOIN classifier1
 ON SECCODE=TRADE_CODE
-where INSTRUMENT_TYPE='Акция обыкновенная'
+where INSTRUMENT_TYPE='Акция обыкновенная' and PRICE is NULL
 group by SECCODE
 order by count(SECCODE) 
 desc limit 1;
