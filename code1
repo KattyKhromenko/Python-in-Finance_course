@@ -31,19 +31,16 @@ COMMIT;
 
 SET unique_checks = 1;
 SET foreign_key_checks = 1;
-
-При запуске скрипта для загрузки данных из классификатора, выдается ошибка 1265: Data truncated for column 'Instrument_id' at row 1. Проверяла столбец на наличие нечисловых значений,слишком больших числовых значений, 
-из-за которых возможен выход за диапазон значений,в столбце все нормально. Поэтому воспользовалась Table Data Import Wizard в Workbench. 
+ 
 #создание таблицы для загрузки классификатора
 use exercise1;
-Create Table list(
+create table list(
 Instrument_id bigint, 
 Instrument_type varchar(100),
-TRADE_CODE varchar(30), 
-PRIMARY KEY(TRADE_CODE));
+TRADE_CODE varchar(30) not NULL);
 LOAD DATA Infile 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/ListingSecurityList.csv'
 INTO TABLE list
-FIELDS TERMINATED BY ','
+FIELDS TERMINATED BY ';'
 LINES TERMINATED BY '\r\n'
 IGNORE 1 LINES;
 
