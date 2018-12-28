@@ -54,10 +54,6 @@ plt.title('Depth of Market')
 plt.legend(loc='upper left')
 plt.show()
 
-sql_query3 = f'select VOL from tradelog1 where TICKER="{SEC_CODE}" and BUYSELL="S" and time <={timestamp} ' \
-    f'and PRICE > 0 group by PRICE order by PRICE DESC'
-cursor.execute(sql_query3)
-result3 = cursor.fetchmany(15000)
-print(result3)
+
 
 
